@@ -2,7 +2,19 @@ console.log("Yup, it loaded");
 
 let products = null;
 let categories = null;
-// get products
+
+function displayProducts(prodArr) {
+  let productWrapper = document.getElementById('product-wrapper')
+  let cardArr = prodArr.map( function(product) {
+    return buildCard(product);
+  });
+  cardArr.forEach( function(card) {
+    // console.log("card ready for DOM", card );
+    let cardWrapper = document.createElement("article");
+    cardWrapper.innerHTML = card
+    productWrapper.appendChild(cardWrapper);
+  })
+}
 
 function buildDOMObj() {
   // loop through products and categories to grab Prod name, Dept, Price, and cat ID
@@ -15,23 +27,30 @@ function buildDOMObj() {
     let categoryItem = categories.filter( function(category) {
       return category.id === currentProduct.category_id;
     })
-    let prodObj = {dept: categoryItem[0].name}
+    let prodObj = {
+      dept: categoryItem[0].name,
+      name: currentProduct.name,
+      price: currentProduct.price,
+      catId: currentProduct.category_id
+    }
     return prodObj
-  })
+  });
   // For now, just see if map worked
   console.log("prod arr", productArr);
+  displayProducts(productArr);
 }
 
 function buildCard(prodObj) {
-  let card = `<div class="prodCard">
+  let card = `<div class="prodCard" data-catId="${prodObj.catId}">
                 <h2>${prodObj.name}</h2>
                 <h3>${prodObj.dept}</h3>
-                <p>${prodObj.price}</p>
+                <p>$${prodObj.price}</p>
               </div>`;
   return card;
 }
-let TempObj = {name: "Furby", dept: "Toys", price: 12.75}
-console.log( "card", buildCard(TempObj) );
+// Test buildCard:
+// let TempObj = {name: "Furby", dept: "Toys", price: 12.75}
+// console.log( "card", buildCard(TempObj) );
 
 function setProducts() {
   products = JSON.parse(event.target.responseText).products;
