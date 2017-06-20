@@ -1,28 +1,61 @@
 console.log("Yup, it loaded");
 
+let products = null;
+let categories = null;
 // get products
-function displayProducts() {
-  let prodArr = JSON.parse(event.target.responseText).products;
-  console.log("products array", prodArr);
+
+function buildDOMObj() {
+  // loop through products and categories to grab Prod name, Dept, Price, and cat ID
+  let productArr = products.map( function(currentProduct) {
+    // inside this loop we need to loop again, but this time through
+    // the categories array to find the one category whose id matches
+    // the "category_id" of the currentProduct. Maybe a .filter()?
+    // That returned array will contain one object. We can set "Dept" on the new obj
+    // we are making with the "name" property of that one object
+    let categoryItem = categories.filter( function(category) {
+      return category.id === currentProduct.category_id;
+    })
+    let prodObj = {dept: categoryItem[0].name}
+    return prodObj
+  })
+  // For now, just see if map worked
+  console.log("prod arr", productArr);
 }
 
-function displayCategories() {
-  let catArr = JSON.parse(event.target.responseText).categories;
-  console.log("category array", catArr);
+function buildCard(prodObj) {
+  let card = `<div class="prodCard">
+                <h2>${prodObj.name}</h2>
+                <h3>${prodObj.dept}</h3>
+                <p>${prodObj.price}</p>
+              </div>`;
+  return card;
+}
+let TempObj = {name: "Furby", dept: "Toys", price: 12.75}
+console.log( "card", buildCard(TempObj) );
+
+function setProducts() {
+  products = JSON.parse(event.target.responseText).products;
+  getCategories();
+}
+
+function setCategories() {
+  categories = JSON.parse(event.target.responseText).categories;
+  buildDOMObj();
 }
 
 function getCategories() {
   let reqCategories = new XMLHttpRequest();
-  reqCategories.addEventListener("load", displayCategories)
+  reqCategories.addEventListener("load", setCategories)
   reqCategories.open("GET", "data/categories.json");
   reqCategories.send();
 }
 
 function getProducts() {
   let reqProducts = new XMLHttpRequest();
-  reqProducts.addEventListener("load", displayProducts)
+  reqProducts.addEventListener("load", setProducts)
   reqProducts.open("GET", "data/products.json");
   reqProducts.send();
 }
 getProducts();
-getCategories();
+
+
