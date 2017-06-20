@@ -2,19 +2,22 @@ console.log("Yup, it loaded");
 
 let products = null;
 let categories = null;
+let productWrapper = document.getElementById('product-wrapper');
 
-function displayProducts(prodArr) {
-  let productWrapper = document.getElementById('product-wrapper')
-  let cardArr = prodArr.map( function(product) {
-    return buildCard(product);
-  });
-  cardArr.forEach( function(card) {
-    // console.log("card ready for DOM", card );
-    let cardWrapper = document.createElement("article");
-    cardWrapper.innerHTML = card
-    productWrapper.appendChild(cardWrapper);
+// TODO function to populate DOM
+function displayProducts(productArr) {
+  let cardArr = productArr.map( function(product) {
+    return buildCard(product)
   })
+  console.log("cardArr ready to go into DOM", cardArr);
+  cardArr.forEach( function(card) {
+    let cardWrapper = document.createElement("article");
+    cardWrapper.innerHTML = card;
+    productWrapper.appendChild(cardWrapper);
+  });
 }
+// TODO function to calc discount
+// TODO function to change prices in DOM
 
 function buildDOMObj() {
   // loop through products and categories to grab Prod name, Dept, Price, and cat ID
